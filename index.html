@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+
+    :root{
+      --primary:#2986B0;
+      --accent:#F59E0B;
+      --bg:#f6f8fb;
+      --border:#e5e7eb;
+      --danger:#b91c1c;
+      --success:#166534
+    }
+
+    *{
+      box-sizing:border-box;
+      font-family:Cairo,Tahoma,Arial,sans-serif
+    }
+
+    body{
+      margin:0;
+      background:linear-gradient(135deg,#e0f2fe,#fff);
+      color:#1e293b
+    }
+
+    .wrap{
+      max-width:980px;
+      margin:28px auto;
+      padding:16px
+    }
+
+    .card{
+      background:#fff;
+      border-radius:26px;
+      padding:24px;
+      box-shadow:0 16px 45px #0001;
+      border:1px solid #dbeafe
+    }
+
+    .head{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      margin-bottom:18px
+    }
+
+    .logo{
+      width:78px;
+      height:78px;
+      border-radius:50%;
+      object-fit:cover;
+      border:3px solid #e2e8f0
+    }
+
+    .head h1{
+      margin:0;
+      font-size:24px
+    }
+
+    .status{
+      color:#64748b;
+      font-size:13px
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+      gap:12px
+    }
+
+    input,
+    select,
+    textarea{
+      width:100%;
+      padding:13px 14px;
+      border:1px solid #cbd5e1;
+      border-radius:14px;
+      font-size:15px;
+      background:white
+    }
+
+    textarea{
+      min-height:90px
+    }
+
+    .full{
+      grid-column:1/-1
+    }
+
+    .label{
+      font-weight:800;
+      margin:8px 0 4px
+    }
+
+    .submit{
+      width:100%;
+      padding:15px;
+      margin-top:18px;
+      border:0;
+      border-radius:14px;
+      background:linear-gradient(135deg,#2986B0,#7ED6D1);
+      color:white;
+      font-weight:800;
+      font-size:17px;
+      cursor:pointer
+    }
+
+    .ok{
+      background:#dcfce7;
+      color:#166534;
+      padding:12px;
+      border-radius:12px;
+      margin-top:14px
+    }
+
+    .error{
+      background:#fee2e2;
+      color:#b91c1c;
+      padding:12px;
+      border-radius:12px;
+      margin-top:14px
+    }
+
+    .hint{
+      font-size:12px;
+      color:#64748b;
+      margin-top:5px
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <div class="card">
+
+    <div class="head">
+
+      <img
+        id="logo"
+        class="logo"
+        src="https://scontent.fogx1-1.fna.fbcdn.net/v/t39.30808-6/327352070_2989580661351512_6179979542828320358_n.jpg"
+      >
+
+      <div>
+
+        <h1>طلب إعارة عتاد</h1>
+
+        <div class="status">
+          جمعية الجواهر بقمار
+        </div>
+
+        <div class="hint">
+          كل المعلومات إجبارية
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="grid">
+
+      <select id="itemId" required>
+        <option value="">اختر العتاد المطلوب</option>
+      </select>
+
+      <input id="borrower" placeholder="اسم طالب الطلب" required>
+
+      <input id="contact" placeholder="رقم الهاتف" required>
+
+      <input id="address" placeholder="الجهة / العنوان" required>
+
+      <select id="identityType" required onchange="toggleBackHint()">
+        <option value="">نوع الهوية</option>
+        <option>بطاقة التعريف الوطنية</option>
+        <option>رخصة سياقة</option>
+        <option>جواز سفر</option>
+        <option>بطاقة طالب</option>
+        <option>أخرى</option>
+      </select>
+
+      <input id="identityNo" placeholder="رقم الهوية" required>
+
+      <input id="identityIssuer" placeholder="الهوية الصادرة عن الجهة" required>
+
+      <input id="identityIssueDate" type="date" required>
+
+      <input id="patientName" placeholder="اسم المريض" required>
+
+      <input id="relationship" placeholder="صلة القرابة" required>
+
+      <input id="city" placeholder="المدينة" required>
+
+      <input id="loanDate" type="date" required>
+
+      <input id="expectedReturnDate" type="date" required>
+
+      <div>
+
+        <div class="label">
+          صورة الهوية من الأمام
+        </div>
+
+        <input id="idFrontImage" type="file" accept="image/*" required>
+
+      </div>
+
+      <div>
+
+        <div class="label" id="backLabel">
+          صورة الهوية من الخلف
+        </div>
+
+        <input id="idBackImage" type="file" accept="image/*" required>
+
+      </div>
+
+      <textarea
+        id="notes"
+        class="full"
+        placeholder="ملاحظات إضافية">
+      </textarea>
+
+    </div>
+
+    <button class="submit" onclick="submitRequest()">
+      إرسال الطلب
+    </button>
+
+    <div id="msg"></div>
+
+  </div>
+
+</div>
+
+<script>
+
+/* ======================================
+   رابط Google Apps Script
+====================================== */
+
+const GS_URL =
+"https://script.google.com/macros/s/AKfycbz0qQhEPaRenW0Z3XAiUXl27AVOUM9ay2K2dfpb4-0p6Zpx9T99bZfho5YKWeoX24FDCg/exec"
+
+
+function setMsg(text,type){
+
+  msg.innerHTML =
+  `<div class="${type}">${text}</div>`
+}
+
+function today(){
+
+  return new Date()
+  .toISOString()
+  .slice(0,10)
+}
+
+function toggleBackHint(){
+
+  const pass =
+  identityType.value === 'جواز سفر'
+
+  idBackImage.required = !pass
+
+  backLabel.textContent = pass
+  ? 'صورة جواز السفر'
+  : 'صورة الهوية من الخلف'
+}
+
+async function compressImage(inputId){
+
+  const file =
+  document.getElementById(inputId).files[0]
+
+  if(!file) return ''
+
+  return new Promise((resolve,reject)=>{
+
+    const img = new Image()
+
+    const reader = new FileReader()
+
+    reader.onload = e => {
+
+      img.onload = ()=>{
+
+        const canvas =
+        document.createElement('canvas')
+
+        let w = img.width
+        let h = img.height
+
+        const max = 1100
+
+        if(w > h && w > max){
+
+          h = h * max / w
+          w = max
+
+        }else if(h > max){
+
+          w = w * max / h
+          h = max
+        }
+
+        canvas.width = w
+        canvas.height = h
+
+        const ctx =
+        canvas.getContext('2d')
+
+        ctx.drawImage(img,0,0,w,h)
+
+        resolve(
+          canvas.toDataURL(
+            'image/jpeg',
+            0.72
+          )
+        )
+      }
+
+      img.src = e.target.result
+    }
+
+    reader.readAsDataURL(file)
+  })
+}
+
+function validate(){
+
+  const required = [
+
+    'itemId',
+    'borrower',
+    'contact',
+    'address',
+    'identityType',
+    'identityNo',
+    'identityIssuer',
+    'identityIssueDate',
+    'patientName',
+    'relationship',
+    'city',
+    'loanDate',
+    'expectedReturnDate'
+  ]
+
+  for(const id of required){
+
+    if(!document.getElementById(id).value.trim()){
+
+      setMsg(
+        'يرجى ملء كل الحقول',
+        'error'
+      )
+
+      return false
+    }
+  }
+
+  return true
+}
+
+async function submitRequest(){
+
+  if(!validate()) return
+
+  setMsg(
+    'جاري إرسال الطلب...',
+    'ok'
+  )
+
+  try{
+
+    const data = {
+
+      itemId:itemId.value,
+
+      borrower:borrower.value,
+
+      contact:contact.value,
+
+      address:address.value,
+
+      identityType:identityType.value,
+
+      identityNo:identityNo.value,
+
+      identityIssuer:identityIssuer.value,
+
+      identityIssueDate:identityIssueDate.value,
+
+      patientName:patientName.value,
+
+      relationship:relationship.value,
+
+      city:city.value,
+
+      loanDate:loanDate.value,
+
+      expectedReturnDate:expectedReturnDate.value,
+
+      notes:notes.value,
+
+      idFrontImage:
+      await compressImage(
+        'idFrontImage'
+      ),
+
+      idBackImage:
+      await compressImage(
+        'idBackImage'
+      )
+    }
+
+    const response =
+    await fetch(GS_URL,{
+
+      method:'POST',
+
+      headers:{
+        'Content-Type':'application/json'
+      },
+
+      body:JSON.stringify(data)
+    })
+
+    const result =
+    await response.json()
+
+    setMsg(
+      'تم إرسال الطلب بنجاح',
+      'ok'
+    )
+
+    console.log(result)
+
+  }catch(err){
+
+    setMsg(
+      'حدث خطأ أثناء الإرسال',
+      'error'
+    )
+
+    console.error(err)
+  }
+}
+
+window.onload = ()=>{
+
+  loanDate.value = today()
+}
+
+</script>
+
+</body>
+</html>
