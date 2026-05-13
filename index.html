@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -171,9 +173,10 @@
 
     <div class="grid">
 
-      <select id="itemId" required>
-        <option value="">اختر العتاد المطلوب</option>
+      <select id="itemId" required onchange="showSelectedItemStatus()">
+        <option value="">جاري تحميل العتاد المتوفر...</option>
       </select>
+      <div class="hint" id="itemStatus">سيظهر هنا وضع العتاد المختار.</div>
 
       <input id="borrower" placeholder="اسم طالب الطلب" required>
 
@@ -251,8 +254,41 @@
 ====================================== */
 
 const GS_URL =
-"https://script.google.com/macros/s/AKfycbz0qQhEPaRenW0Z3XAiUXl27AVOUM9ay2K2dfpb4-0p6Zpx9T99bZfho5YKWeoX24FDCg/exec"
+"https://script.google.com/macros/s/AKfycbz8tUzG24H6yZqWFU7Z0dJ-O2hTSUOTjdXpMs0hVPPj00ZYzT1cXVCZHON3Fbbde6waKw/exec"
 
+
+
+async function apiRequest(action,args){
+  const response = await fetch(GS_URL,{
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify({action:action,args:args||[]})
+  })
+  const json = await response.json()
+  if(!json.ok) throw new Error(json.error || 'خطأ غير معروف')
+  return json.data
+}
+
+let availableEquipment = []
+
+async function loadRequestData(){
+  try{
+    const data = await apiRequest('getRequestFormData',[])
+    availableEquipment = data.equipment || []
+    if(data.identity && data.identity.logoUrl) logo.src = data.identity.logoUrl
+    itemId.innerHTML = '<option value="">اختر العتاد المطلوب</option>' +
+      availableEquipment.map(x=>`<option value="${x.id}">${x.inventoryNo} - ${x.name} | الحالة: ${x.condition}</option>`).join('')
+    itemStatus.textContent = availableEquipment.length ? 'اختر العتاد لعرض حالته.' : 'لا يوجد عتاد متوفر حاليا.'
+  }catch(err){
+    itemId.innerHTML = '<option value="">تعذر تحميل العتاد</option>'
+    itemStatus.textContent = err.message
+  }
+}
+
+function showSelectedItemStatus(){
+  const item = availableEquipment.find(x=>String(x.id)===String(itemId.value))
+  itemStatus.textContent = item ? `العتاد: ${item.name} - رقم الجرد: ${item.inventoryNo} - الحالة: ${item.condition}` : 'سيظهر هنا وضع العتاد المختار.'
+}
 
 function setMsg(text,type){
 
@@ -425,25 +461,19 @@ async function submitRequest(){
       )
     }
 
-    const response =
-    await fetch(GS_URL,{
-
-      method:'POST',
-
-      headers:{
-        'Content-Type':'application/json'
-      },
-
-      body:JSON.stringify(data)
-    })
-
-    const result =
-    await response.json()
+    const result = await apiRequest('submitExternalLoanRequest',[data])
 
     setMsg(
-      'تم إرسال الطلب بنجاح',
+      `تم استلام طلبك رقم ${result.requestNo} - سنتواصل بك قريبا`,
       'ok'
     )
+
+    document.querySelectorAll('input, textarea, select').forEach(el=>{
+      if(el.type === 'file') el.value = ''
+      else if(el.id !== 'loanDate') el.value = ''
+    })
+    loanDate.value = today()
+    await loadRequestData()
 
     console.log(result)
 
@@ -461,6 +491,7 @@ async function submitRequest(){
 window.onload = ()=>{
 
   loanDate.value = today()
+  loadRequestData()
 }
 
 </script>
