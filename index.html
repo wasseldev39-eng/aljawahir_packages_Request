@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -150,7 +152,7 @@
       <img
         id="logo"
         class="logo"
-        src="https://scontent.fogx1-1.fna.fbcdn.net/v/t39.30808-6/327352070_2989580661351512_6179979542828320358_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHb9JHku7ZSuDNWpQMw8cY3iiVEWEa9k1CKJURYRr2TUH9bCAsJ_V6KYA7P9Tpl46IxYiOOBR5SiIqLUwNUmMuv&_nc_ohc=2dsdjb8gSYAQ7kNvwH116-X&_nc_oc=Adpj1lt1Lv4WVdwbVnp7YBj-HRnoP-jOpVRI-pnQiYHqM-6Zrps1Cn_jJwDzaIazkQs&_nc_zt=23&_nc_ht=scontent.fogx1-1.fna&_nc_gid=29j2LbQnb1HhvB3ulWQBvQ&_nc_ss=7b2a8&oh=00_Af487u07jo1GsC6WG2-gBINmj99JOdOzfeE2H0BDpti-cw&oe=6A0B7008"
+        src="https://scontent.fogx1-1.fna.fbcdn.net/v/t39.30808-6/327352070_2989580661351512_6179979542828320358_n.jpg"
       >
 
       <div>
@@ -251,7 +253,34 @@
 ====================================== */
 
 const GS_URL =
-"https://script.google.com/macros/s/AKfycbzG8grLM0eOfpIwQhoBSHZ-fhOd1EBh9052AxQaIRNDL0jVcVHhOQotBF5HC6odGY07Ag/exec"
+"https://script.google.com/macros/s/AKfycbzTgzB9eq2BSZXN0VsOj7YYRMlu-enwcDslswqdzNRv5v1xiGP2bRF5Dd2Ivj8-OB7fTA/exec"
+
+async function apiCall(action,args){
+
+  const response =
+  await fetch(GS_URL,{
+
+    method:'POST',
+
+    headers:{
+      'Content-Type':'text/plain;charset=utf-8'
+    },
+
+    body:JSON.stringify({
+      action:action,
+      args:args || []
+    })
+  })
+
+  const result =
+  await response.json()
+
+  if(!result.ok){
+    throw new Error(result.error || 'خطأ غير معروف')
+  }
+
+  return result.data
+}
 
 
 function setMsg(text,type){
@@ -425,27 +454,24 @@ async function submitRequest(){
       )
     }
 
-    const response =
-    await fetch(GS_URL,{
-
-      method:'POST',
-
-      headers:{
-        'Content-Type':'application/json'
-      },
-
-      body:JSON.stringify(data)
-    })
-
     const result =
-    await response.json()
+    await apiCall('submitExternalLoanRequest',[data])
 
     setMsg(
-      'تم إرسال الطلب بنجاح',
+      'تم إرسال الطلب بنجاح. رقم الطلب: ' + (result.requestNo || ''),
       'ok'
     )
 
     console.log(result)
+
+    document.querySelectorAll('input,textarea').forEach(el=>{
+      if(el.type === 'file') el.value = ''
+      else if(el.id !== 'loanDate') el.value = ''
+    })
+    expectedReturnDate.value = ''
+    notes.value = ''
+    loanDate.value = today()
+    loadFormData()
 
   }catch(err){
 
@@ -458,9 +484,39 @@ async function submitRequest(){
   }
 }
 
+async function loadFormData(){
+
+  try{
+
+    const data =
+    await apiCall('getRequestFormData',[])
+
+    if(data.identity && data.identity.logoUrl){
+      logo.src = data.identity.logoUrl
+    }
+
+    itemId.innerHTML =
+    '<option value="">اختر العتاد المطلوب</option>' +
+    (data.equipment || []).map(item =>
+      `<option value="${String(item.id).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}">${String(item.inventoryNo || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')} - ${String(item.name || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}</option>`
+    ).join('')
+
+  }catch(err){
+
+    setMsg(
+      'تعذر تحميل قائمة العتاد المتوفر',
+      'error'
+    )
+
+    console.error(err)
+  }
+}
+
 window.onload = ()=>{
 
   loanDate.value = today()
+
+  loadFormData()
 }
 
 </script>
