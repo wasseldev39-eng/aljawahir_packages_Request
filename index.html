@@ -16,126 +16,252 @@
 
     :root{
       --primary:#2986B0;
+      --primary-dark:#1f6f93;
       --accent:#F59E0B;
+      --accent-soft:#fff7ed;
+      --mint:#7ED6D1;
       --bg:#f6f8fb;
-      --border:#e5e7eb;
+      --text:#1e293b;
+      --muted:#64748b;
+      --border:#dbeafe;
+      --field:#f8fafc;
       --danger:#b91c1c;
-      --success:#166534
+      --success:#166534;
+      --radius:20px;
     }
 
     *{
       box-sizing:border-box;
-      font-family:Cairo,Tahoma,Arial,sans-serif
+      font-family:Cairo,Tahoma,Arial,sans-serif;
     }
 
     body{
       margin:0;
-      background:linear-gradient(135deg,#e0f2fe,#fff);
-      color:#1e293b
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top right,#bae6fd 0,#eef9ff 30%,transparent 54%),
+        linear-gradient(135deg,#f8fafc,#ffffff 42%,#eff6ff);
+      color:var(--text);
+    }
+
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(90deg,transparent 0 96%,rgba(41,134,176,.08) 96% 100%),
+        linear-gradient(0deg,transparent 0 96%,rgba(126,214,209,.10) 96% 100%);
+      background-size:34px 34px;
+      mask-image:linear-gradient(to bottom,rgba(0,0,0,.55),transparent 72%);
     }
 
     .wrap{
-      max-width:980px;
-      margin:28px auto;
-      padding:16px
+      max-width:1040px;
+      margin:34px auto;
+      padding:18px;
+      position:relative;
     }
 
     .card{
-      background:#fff;
-      border-radius:26px;
-      padding:24px;
-      box-shadow:0 16px 45px #0001;
-      border:1px solid #dbeafe
+      position:relative;
+      overflow:hidden;
+      background:rgba(255,255,255,.92);
+      backdrop-filter:blur(14px);
+      border-radius:30px;
+      padding:30px;
+      box-shadow:0 24px 70px rgba(15,23,42,.10);
+      border:1px solid rgba(219,234,254,.95);
+    }
+
+    .card:before{
+      content:"";
+      position:absolute;
+      top:0;
+      right:0;
+      width:100%;
+      height:7px;
+      background:linear-gradient(90deg,var(--accent),var(--mint),var(--primary));
     }
 
     .head{
       display:flex;
-      gap:14px;
+      gap:18px;
       align-items:center;
-      margin-bottom:18px
+      margin-bottom:24px;
+      padding:16px;
+      border:1px solid #e0f2fe;
+      border-radius:24px;
+      background:linear-gradient(135deg,#ffffff,#f0f9ff);
     }
 
     .logo{
-      width:78px;
-      height:78px;
-      border-radius:50%;
+      width:84px;
+      height:84px;
+      border-radius:24px;
       object-fit:cover;
-      border:3px solid #e2e8f0
+      border:4px solid white;
+      box-shadow:0 12px 28px rgba(41,134,176,.18);
     }
 
     .head h1{
-      margin:0;
-      font-size:24px
+      margin:0 0 4px;
+      font-size:28px;
+      line-height:1.25;
+      color:var(--primary-dark);
+      font-weight:800;
+      letter-spacing:-.4px;
     }
 
     .status{
-      color:#64748b;
-      font-size:13px
+      color:var(--muted);
+      font-size:14px;
+      font-weight:700;
     }
 
     .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-      gap:12px
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:14px;
     }
 
     input,
     select,
     textarea{
       width:100%;
-      padding:13px 14px;
+      padding:14px 15px;
       border:1px solid #cbd5e1;
-      border-radius:14px;
+      border-radius:16px;
       font-size:15px;
-      background:white
+      background:var(--field);
+      color:var(--text);
+      outline:none;
+      transition:.2s ease;
+      box-shadow:0 1px 0 rgba(15,23,42,.03);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus{
+      border-color:var(--primary);
+      background:#fff;
+      box-shadow:0 0 0 4px rgba(41,134,176,.12);
+    }
+
+    input::placeholder,
+    textarea::placeholder{
+      color:#94a3b8;
+    }
+
+    input[type="file"]{
+      padding:12px;
+      background:#fff;
+      border-style:dashed;
+      cursor:pointer;
+    }
+
+    input[type="date"]{
+      color:#334155;
     }
 
     textarea{
-      min-height:90px
+      min-height:105px;
+      resize:vertical;
+      line-height:1.8;
     }
 
     .full{
-      grid-column:1/-1
+      grid-column:1/-1;
     }
 
     .label{
       font-weight:800;
-      margin:8px 0 4px
+      margin:4px 0 8px;
+      color:#334155;
+      font-size:14px;
     }
 
     .submit{
       width:100%;
-      padding:15px;
-      margin-top:18px;
+      padding:16px;
+      margin-top:22px;
       border:0;
-      border-radius:14px;
-      background:linear-gradient(135deg,#2986B0,#7ED6D1);
+      border-radius:18px;
+      background:linear-gradient(135deg,var(--primary),var(--mint));
       color:white;
       font-weight:800;
-      font-size:17px;
-      cursor:pointer
+      font-size:18px;
+      cursor:pointer;
+      box-shadow:0 16px 34px rgba(41,134,176,.24);
+      transition:.2s ease;
+    }
+
+    .submit:hover{
+      transform:translateY(-1px);
+      box-shadow:0 20px 42px rgba(41,134,176,.30);
+    }
+
+    .submit:active{
+      transform:translateY(0);
+    }
+
+    .ok,
+    .error{
+      padding:13px 15px;
+      border-radius:16px;
+      margin-top:16px;
+      font-weight:700;
+      border:1px solid transparent;
     }
 
     .ok{
       background:#dcfce7;
-      color:#166534;
-      padding:12px;
-      border-radius:12px;
-      margin-top:14px
+      color:var(--success);
+      border-color:#bbf7d0;
     }
 
     .error{
       background:#fee2e2;
-      color:#b91c1c;
-      padding:12px;
-      border-radius:12px;
-      margin-top:14px
+      color:var(--danger);
+      border-color:#fecaca;
     }
 
     .hint{
+      display:inline-block;
       font-size:12px;
-      color:#64748b;
-      margin-top:5px
+      color:#92400e;
+      background:var(--accent-soft);
+      border:1px solid #fed7aa;
+      border-radius:999px;
+      padding:4px 10px;
+      margin-top:8px;
+    }
+
+    @media(max-width:640px){
+      .wrap{
+        margin:12px auto;
+        padding:10px;
+      }
+
+      .card{
+        padding:20px;
+        border-radius:24px;
+      }
+
+      .head{
+        align-items:flex-start;
+        padding:14px;
+      }
+
+      .logo{
+        width:68px;
+        height:68px;
+        border-radius:20px;
+      }
+
+      .head h1{
+        font-size:22px;
+      }
     }
 
   </style>
@@ -173,10 +299,9 @@
 
     <div class="grid">
 
-      <select id="itemId" required onchange="showSelectedItemStatus()">
-        <option value="">جاري تحميل العتاد المتوفر...</option>
+      <select id="itemId" required>
+        <option value="">اختر العتاد المطلوب</option>
       </select>
-      <div class="hint" id="itemStatus">سيظهر هنا وضع العتاد المختار.</div>
 
       <input id="borrower" placeholder="اسم طالب الطلب" required>
 
@@ -195,9 +320,12 @@
 
       <input id="identityNo" placeholder="رقم الهوية" required>
 
-      <input id="identityIssuer" placeholder="الهوية الصادرة عن الجهة" required>
+      <input id="identityIssuer" placeholder="الهوية الصادرة عن" required>
 
-      <input id="identityIssueDate" type="date" required>
+      <div>
+        <div class="label">الصادرة بتاريخ</div>
+        <input id="identityIssueDate" type="date" required>
+      </div>
 
       <input id="patientName" placeholder="اسم المريض" required>
 
@@ -205,9 +333,15 @@
 
       <input id="city" placeholder="المدينة" required>
 
-      <input id="loanDate" type="date" required>
+      <div>
+        <div class="label">بداية الإعارة</div>
+        <input id="loanDate" type="date" required>
+      </div>
 
-      <input id="expectedReturnDate" type="date" required>
+      <div>
+        <div class="label">تاريخ الترجاع</div>
+        <input id="expectedReturnDate" type="date" required>
+      </div>
 
       <div>
 
@@ -254,41 +388,8 @@
 ====================================== */
 
 const GS_URL =
-"https://script.google.com/macros/s/AKfycbx9A-EHv-J4f54uH2n1cxulYYyZ1a-W85hfbK1XNDBAPPhIROyPrXFdAZPU9pEWJlVSCA/exec"
+"https://script.google.com/macros/s/AKfycbzG8grLM0eOfpIwQhoBSHZ-fhOd1EBh9052AxQaIRNDL0jVcVHhOQotBF5HC6odGY07Ag/exec"
 
-
-
-async function apiRequest(action,args){
-  const response = await fetch(GS_URL,{
-    method:'POST',
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body:JSON.stringify({action:action,args:args||[]})
-  })
-  const json = await response.json()
-  if(!json.ok) throw new Error(json.error || 'خطأ غير معروف')
-  return json.data
-}
-
-let availableEquipment = []
-
-async function loadRequestData(){
-  try{
-    const data = await apiRequest('getRequestFormData',[])
-    availableEquipment = data.equipment || []
-    if(data.identity && data.identity.logoUrl) logo.src = data.identity.logoUrl
-    itemId.innerHTML = '<option value="">اختر العتاد المطلوب</option>' +
-      availableEquipment.map(x=>`<option value="${x.id}">${x.inventoryNo} - ${x.name} | الحالة: ${x.condition}</option>`).join('')
-    itemStatus.textContent = availableEquipment.length ? 'اختر العتاد لعرض حالته.' : 'لا يوجد عتاد متوفر حاليا.'
-  }catch(err){
-    itemId.innerHTML = '<option value="">تعذر تحميل العتاد</option>'
-    itemStatus.textContent = err.message
-  }
-}
-
-function showSelectedItemStatus(){
-  const item = availableEquipment.find(x=>String(x.id)===String(itemId.value))
-  itemStatus.textContent = item ? `العتاد: ${item.name} - رقم الجرد: ${item.inventoryNo} - الحالة: ${item.condition}` : 'سيظهر هنا وضع العتاد المختار.'
-}
 
 function setMsg(text,type){
 
@@ -461,19 +562,25 @@ async function submitRequest(){
       )
     }
 
-    const result = await apiRequest('submitExternalLoanRequest',[data])
+    const response =
+    await fetch(GS_URL,{
+
+      method:'POST',
+
+      headers:{
+        'Content-Type':'application/json'
+      },
+
+      body:JSON.stringify(data)
+    })
+
+    const result =
+    await response.json()
 
     setMsg(
-      `تم استلام طلبك رقم ${result.requestNo} - سنتواصل بك قريبا`,
+      'تم إرسال الطلب بنجاح',
       'ok'
     )
-
-    document.querySelectorAll('input, textarea, select').forEach(el=>{
-      if(el.type === 'file') el.value = ''
-      else if(el.id !== 'loanDate') el.value = ''
-    })
-    loanDate.value = today()
-    await loadRequestData()
 
     console.log(result)
 
@@ -491,7 +598,6 @@ async function submitRequest(){
 window.onload = ()=>{
 
   loanDate.value = today()
-  loadRequestData()
 }
 
 </script>
